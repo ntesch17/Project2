@@ -1,0 +1,208 @@
+body {
+    background: #7400b8;
+    font-family: 'Krona One', sans-serif;
+}
+
+@media (min-width: 1000px) {
+    canvas {
+        border: 8px solid #5e60ce;
+        margin: auto;
+        position: absolute;
+        top: 290px;
+        left: 140px;
+    }
+}
+
+@media (min-width: 1500px) {
+    canvas {
+        border: 8px solid #5e60ce;
+        margin: auto;
+        position: absolute;
+        top: 290px;
+        left: 140px;
+    }
+}
+
+@media (min-width: 1700px) {
+    canvas {
+        border: 8px solid #5e60ce;
+        margin: auto;
+        position: absolute;
+        top: 290px;
+        left: 390px;
+    }
+}
+
+@media (min-width: 1900px) {
+    canvas {
+        border: 8px solid #5e60ce;
+        margin: auto;
+        position: absolute;
+        top: 290px;
+        left: 490px;
+    }
+}
+
+@media (min-width: 2100px) {
+    canvas {
+        border: 8px solid #5e60ce;
+        margin: auto;
+        position: absolute;
+        top: 290px;
+        left: 590px;
+    }
+}
+
+@media (min-width: 2300px) {
+    canvas {
+        border: 8px solid #5e60ce;
+        margin: auto;
+        position: absolute;
+        top: 290px;
+        left: 690px;
+    }
+}
+
+html {
+    font-family: 'Krona One', sans-serif;
+    margin: auto;
+}
+
+#title {
+    font-size: 80px;
+    color: #5390d9;
+    text-align: center;
+    text-decoration: underline;
+    background-color: #80ffdb;
+}
+
+#name {
+    font-size: 40px;
+    color: #5390d9;
+    text-align: center;
+    background-color: #80ffdb;
+}
+
+.value {
+    font-size: 10px;
+    margin: auto;
+    color: #80ffdb;
+}
+
+#redValue {
+    font-size: 10px;
+    color: #80ffdb;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+#greenValue {
+    font-size: 10px;
+    color: #80ffdb;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+#blueValue {
+    font-size: 10px;
+    color: #80ffdb;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.label {
+    font-size: 25px;
+    color: #80ffdb;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.types {
+    font-size: 20px;
+    color: #80ffdb;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.tintCB {
+    font-size: 10px;
+    color: #80ffdb;
+    margin: auto;
+    margin-right: 1em;
+}
+
+h3 {
+    font-size: 10px;
+    color: #80ffdb;
+    margin: auto;
+    margin-right: 1em;
+}
+
+#controls {
+    font-size: 25px;
+    color: #80ffdb;
+    margin-top: 470px;
+}
+
+#audioControls {
+    margin: auto;
+    width: 700px;
+}
+
+#trackSelect {
+    margin: auto;
+    color: #80ffdb;
+    background-color: #5390d9;
+    margin-right: 1em;
+    width: 200px;
+}
+
+#fsButton {
+    margin: auto;
+    color: #80ffdb;
+    font-size: 1.2rem;
+    width: 8rem;
+}
+
+.audioTypeSelect {
+    margin-right: 2em;
+    margin-left: 1em;
+    display: inline-flex;
+}
+
+.frequency {
+    margin: auto;
+    color: #80ffdb;
+    margin-left: 1em;
+}
+
+.waveform {
+    margin: auto;
+    color: #80ffdb;
+    margin-left: 1em;
+}
+
+section {
+    display: inline-flex;
+    background-color: #6930c3;
+    border: 3px solid #5e60ce;
+}
+
+button {
+    background-color: #00ccff;
+    width: 50px;
+    height: 50px;
+}
+
+#fsButton:hover {
+    color: #5390d9;
+}
+
+#fsButton:active {
+    color: #5390d9;
+}
