@@ -13,13 +13,14 @@
     <main>
         <h1 id="title"> Audio Boombox!</h1>
         <h2 id="name"> By: Nicholas Tesch</h2>
+        <p id="desc">A themed Audio Visualizer to show frequencies of the data through canvas effects! Select a song and press play... then use the different options below to adjust the visuals! </p>
         <canvas width="800" height="400"></canvas>
         <div id="controls">
             <section>
                 <label>Track Select: 
                     <select id="trackSelect">
-                        
-                        <option value="media/Sing it Loud.mp3" selected>Sing it Loud</option>
+                        <option >-Pick a Song-</option>
+                        <option value="media/Sing It Loud.mp3">Sing it Loud</option>
                         <option value="media/Beautiful Disaster.mp3">Beautiful Disaster</option>
                         <option value="media/One More Time.mp3">One More Time</option>
                     </select>
@@ -29,34 +30,56 @@
                 <button id="fsButton">Full Screen</button>
 
 
+
             </section>
         </div>
 
     </main>
-
     <section>
         <label class="label">Audio Type:</label>
-        <input type="radio" class="frequency" name="dataDisplay" value="frequency">
+        <input type="radio" class="frequency" name="dataDisplay" value="frequency" checked>
         <label class="frequency" for="frequency">Frequency</label>
         <input type="radio" class="waveform" name="dataDisplay" value="waveform">
         <label class="waveform" for="waveform">Waveform</label>
     </section>
+    <section>
+        <label class="label">Biquid Filter Select:</label>
+
+        <span class="types2"><label for="noneRB">No Biquid Filter</label><input type="radio" name="biquidFilters" id="noneRB" checked></span>
+        <span class="types2"><label for="highshelfRB">Highshelf Filter</label><input type="radio" name="biquidFilters" id="highshelfRB"></span>
+        <span class="types2"><label for="lowshelfRB">Lowshelf Filter</label><input type="radio" name="biquidFilters" id="lowshelfRB"></span>
+        <span class="types2"><label for="highpassRB">Highpass Filter</label><input type="radio" name="biquidFilters" id="highpassRB"></span>
+        <span class="types2"><label for="lowpassRB">Lowpass Filter</label><input type="radio" name="biquidFilters" id="lowpassRB"></span>
+        <span class="types2"><label for="bandpassRB">Bandpass Filter</label><input type="radio" name="biquidFilters" id="bandpassRB"></span>
+        <span class="types2"><label for="peakingRB">Peaking Filter</label><input type="radio" name="biquidFilters" id="peakingRB"></span>
+        <span class="types2"><label for="notchRB">Notch Filter</label><input type="radio" name="biquidFilters" id="notchRB"></span>
+        <span class="types2"><label for="allpassRB">Allpass Filter</label><input type="radio" name="biquidFilters" id="allpassRB"></span>
+
+
+
+    </section>
+    <section>
+        <span class="label">Biquid Filter Adjusting: <input type="range" min="0" max="25" value="0" id="soundFilterSlider"></span>
+        <p class="value">Filter Value: </p><span id="soundFilterValue">0</span>
+    </section>
+
 
     <section>
         <label class="label">Background Types:</label>
         <div class="types">
             <span><input type="checkbox" id="gradientCB"><label for="gradientCB">Show Gradient</label></span>
-            <span><input type="checkbox" id="circleBackgroundCB"><label for="circleBackgroundCB">Show Circle Background</label></span>
-            <span><input type="checkbox" id="lineBackgroundCB"><label for="lineBackgroundCB">Show Line Background</label></span>
+
+
         </div>
     </section>
 
     <section>
         <label class="label">Visual Effect Types:</label>
         <div class="types">
-            <span><input type="checkbox" id="barsCB"><label for="barsCB">Show Bar Display</label></span>
             <span><input type="checkbox" id="circlesCB"><label for="circlesCB">Show Circle Bar Display</label></span>
             <span><input type="checkbox" id="rectanglesCB"><label for="rectanglesCB">Show Rectangle Bar Display</label></span>
+            <span><input type="checkbox" id="circleBackgroundCB"><label for="circleBackgroundCB">Show Circle Display</label></span>
+            <span><input type="checkbox" id="phyllotaxisCB"><label for="phyllotaxisCB">Show Phyllotaxis</label></span>
             <span><input type="checkbox" id="quadraticCurveCB"><label for="quadraticCurveCB">Show Quadratic Curve Display</label></span>
         </div>
     </section>
@@ -64,12 +87,12 @@
     <section>
         <label class="label">Filter Types:</label>
         <div class="types">
-            <span><input type="checkbox" id="noiseCB"><label for="noiseCB">Show Noise</label></span>
-            <span><input type="checkbox" id="invertCB"><label for="invertCB">Show Invert</label></span>
-            <span><input type="checkbox" id="embossCB"><label for="embossCB">Show Emboss</label></span>
-            <span><input type="checkbox" id="desaturationCB"><label for="desaturationCB">Show Desaturation</label></span>
-            <span><input type="checkbox" id="sepiaCB"><label for="sepiaCB">Show Sepia</label></span>
-            <span><input type="checkbox" id="shiftRgbCB"><label for="shiftRgbCB">Show RGB Shift</label></span>
+            <span><input type="checkbox" id="modesCB"><label for="modesCB">Show Color Modes</label></span>
+            <span><input type="checkbox" id="noiseCB"><label for="noiseCB">Show Random Color Noise</label></span>
+            <span><input type="checkbox" id="invertCB"><label for="invertCB">Show Invert Of Colors</label></span>
+            <span><input type="checkbox" id="embossCB"><label for="embossCB">Show Emboss Of Colors</label></span>
+            <span><input type="checkbox" id="sepiaCB"><label for="sepiaCB">Show Sepia Of Colors</label></span>
+            <span><input type="checkbox" id="shiftRgbCB"><label for="shiftRgbCB">Show RGB Shift Of Colors</label></span>
         </div>
     </section>
     <br>
@@ -78,13 +101,13 @@
         <input type="checkbox" class="tintCB"><label class="tintCB" for="tintCB">Show Tint</label>
         <h3>Red Value (RGB):</h3>
         <input type="range" min="0" max="255" value="0" id="redRange">
-        <p class="value">Red Value: </p><span id="redValue">0</span></div>
+        <p class="value">Red Value: </p><span id="redValue">0</span>
         <h3>Green Value (RGB):</h3>
         <input type="range" min="0" max="255" value="0" id="greenRange">
-        <p class="value">Green Value: </p><span id="greenValue">0</span></div>
+        <p class="value">Green Value: </p><span id="greenValue">0</span>
         <h3>Blue Value (RGB):</h3>
         <input type="range" min="0" max="255" value="0" id="blueRange">
-        <p class="value">Blue Value: </p><span id="blueValue">0</span></div>
+        <p class="value">Blue Value: </p><span id="blueValue">0</span>
     </section>
 </body>
 

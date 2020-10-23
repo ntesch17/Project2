@@ -11,6 +11,14 @@ body {
         top: 290px;
         left: 140px;
     }
+    #desc {
+        background-color: #00ccff;
+        text-align: center;
+        margin-top: 470px;
+        width: 800px;
+        margin-left: 140px;
+        font-size: 25px;
+    }
 }
 
 @media (min-width: 1500px) {
@@ -20,6 +28,14 @@ body {
         position: absolute;
         top: 290px;
         left: 140px;
+    }
+    #desc {
+        background-color: #00ccff;
+        text-align: center;
+        margin-top: 470px;
+        width: 800px;
+        margin-left: 140px;
+        font-size: 25px;
     }
 }
 
@@ -31,6 +47,14 @@ body {
         top: 290px;
         left: 390px;
     }
+    #desc {
+        background-color: #00ccff;
+        text-align: center;
+        margin-top: 470px;
+        width: 800px;
+        margin-left: 390px;
+        font-size: 25px;
+    }
 }
 
 @media (min-width: 1900px) {
@@ -41,6 +65,14 @@ body {
         top: 290px;
         left: 490px;
     }
+    #desc {
+        background-color: #00ccff;
+        text-align: center;
+        margin-top: 470px;
+        width: 800px;
+        margin-left: 490px;
+        font-size: 25px;
+    }
 }
 
 @media (min-width: 2100px) {
@@ -49,7 +81,15 @@ body {
         margin: auto;
         position: absolute;
         top: 290px;
-        left: 590px;
+        margin-left: 590px;
+    }
+    #desc {
+        background-color: #00ccff;
+        text-align: center;
+        margin-top: 470px;
+        width: 800px;
+        font-size: 25px;
+        margin-left: 590px;
     }
 }
 
@@ -59,7 +99,15 @@ body {
         margin: auto;
         position: absolute;
         top: 290px;
-        left: 690px;
+        margin-left: 690px;
+    }
+    #desc {
+        background-color: #00ccff;
+        text-align: center;
+        margin-top: 470px;
+        width: 800px;
+        font-size: 25px;
+        margin-left: 690px;
     }
 }
 
@@ -113,6 +161,14 @@ html {
     margin-right: 1em;
 }
 
+#soundFilterValue {
+    font-size: 10px;
+    color: #80ffdb;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
 .label {
     font-size: 25px;
     color: #80ffdb;
@@ -123,6 +179,13 @@ html {
 
 .types {
     font-size: 20px;
+    color: #80ffdb;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.types2 {
     color: #80ffdb;
     margin: auto;
     margin-left: 1em;
@@ -146,7 +209,7 @@ h3 {
 #controls {
     font-size: 25px;
     color: #80ffdb;
-    margin-top: 470px;
+    margin-top: 40px;
 }
 
 #audioControls {

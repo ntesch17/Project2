@@ -38,8 +38,8 @@ const goFullscreen = (element) => {
     // .. and do nothing if the method is not supported
 };
 
-const clearCanvas = () => {
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+const clearCanvas = (ctx, w, h) => {
+    ctx.clearRect(0, 0, w, h);
 }
 
 export { makeColor, clearCanvas, getRandom, getRandomColor, getLinearGradient, goFullscreen };
