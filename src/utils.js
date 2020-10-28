@@ -21,7 +21,6 @@ const getLinearGradient = (ctx, startX, startY, endX, endY, colorStops) => {
     return lg;
 };
 
-
 const goFullscreen = (element) => {
     if (element.requestFullscreen) {
         element.requestFullscreen();

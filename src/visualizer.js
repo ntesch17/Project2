@@ -1,14 +1,4 @@
-/*
-	The purpose of this file is to take in the analyser node and a <canvas> element: 
-	  - the module will create a drawing context that points at the <canvas> 
-	  - it will store the reference to the analyser node
-	  - in draw(), it will loop through the data in the analyser node
-	  - and then draw something representative on the canvas
-	  - maybe a better name for this file/module would be *visualizer.js* ?
-*/
-
 import * as utils from './utils.js';
-import * as audio from './audio.js';
 
 let ctx, canvasWidth, canvasHeight, gradient, analyserNode, audioData;
 let red, blue, green;
@@ -22,6 +12,7 @@ let n = 0,
 let audioElement;
 const drawParams = Object.freeze({
     "zero": 0,
+    "four": 4,
     "twenty": 20,
     "twentyFive": 25,
     "onePointFive": 1.5,
@@ -339,7 +330,7 @@ function draw(params = {}) {
             let x_end = center_x + Math.cos(rads * x) * (radius + barHeight);
             let y_end = center_y + Math.sin(rads * x) * (radius + barHeight);
 
-            let maxRadius = canvasHeight / 4;
+            let maxRadius = canvasHeight / drawParams.four;
             let percent = audioData[x] / 255;
             let circleRadius = percent * maxRadius;
 
