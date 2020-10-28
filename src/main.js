@@ -14,13 +14,10 @@ let audioElement;
 
 let highshelf = false,
     lowshelf = false,
-    allpass = false,
     highpass = false,
     lowpass = false,
     bandpass = false,
-    peaking = false,
-    notch = false;
-
+    peaking = false;
 
 const drawParams = {
     showGradientBackground: false,
@@ -40,91 +37,62 @@ const drawParams = {
     showRectangleBarDisplay: false,
     showLineBackground: false,
     showModes: false,
-    showPhyllotaxis: false
+    showPhyllotaxis: false,
 };
 
-// 1 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
     sound1: "media/Sing it Loud.mp3"
 });
 
 function init() {
-    console.log("init called");
+    //Hooking up canvas element.
+    let canvasElement = document.querySelector("canvas");
 
-
-    let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
-
+    //Hooking up audio element.
     audioElement = document.querySelector('audio');
 
-
-
+    //Setting up web audio to first song until track change.
     audio.setupWebaudio(DEFAULTS.sound1);
 
-
-
-    console.log(`audioCtx.state after = ${audio.audioCtx.state}`);
-
-
-
-
-
+    //Managing UI according to user input
     setupUI(canvasElement);
+
+    //Setting up canvas
     canvas.setupCanvas(canvasElement, audio.analyserNode);
     loop();
 }
 
+//Checks if the user checks any input choices, if so the visuals appear.
 function setupUI(canvasElement) {
-    // A - hookup fullscreen button
     const fsButton = document.querySelector("#fsButton");
-
 
     audioElement.addEventListener('play', function() {
         if (audio.audioCtx.state == "suspended") {
-
             audio.audioCtx.resume();
-
         }
-        //audioElement.volume = 0
         audio.playCurrentSound();
 
     });
     audioElement.addEventListener('pause', function() {
-
         audio.pauseCurrentSound();
-
     });
 
-    // let biquidSelect = document.querySelector("#biquidSelect");
-    // //add .onchange event to <select>
+    document.querySelector('#highshelfRB').checked = highshelf;
 
-    // biquidSelect.onchange = e => {
-    //     document.querySelector('#soundFilterSlider').value = 0
-    //     audio.toggleHighshelf(e.target.value);
-
-    // };
-
-
-    document.querySelector('#highshelfRB').checked = highshelf; // `highshelf` is a boolean we will declare in a second
-
-    // II. change the value of `highshelf` every time the high shelf checkbox changes state
     document.querySelector('#highshelfRB').onchange = e => {
         highshelf = e.target.value
         document.querySelector('#soundFilterSlider').value = 0;
         document.querySelector("#soundFilterValue").value = 0;
-        audio.toggleHighshelf(highshelf, "highshelf"); // turn on or turn off the filter, depending on the value of `highshelf`!
+        audio.toggleSoundModes(highshelf, "highshelf");
     };
 
-    // III. 
+    document.querySelector('#lowshelfRB').checked = lowshelf;
 
-    // I. set the initial state of the high shelf checkbox
-    document.querySelector('#lowshelfRB').checked = lowshelf; // `highshelf` is a boolean we will declare in a second
-
-    // II. change the value of `highshelf` every time the high shelf checkbox changes state
     document.querySelector('#lowshelfRB').onchange = e => {
         lowshelf = e.target.value;
         document.querySelector('#soundFilterSlider').value = 0;
         document.querySelector("#soundFilterValue").value = 0;
-        audio.toggleHighshelf(lowshelf, "lowshelf"); // turn on or turn off the filter, depending on the value of `highshelf`!
+        audio.toggleSoundModes(lowshelf, "lowshelf");
     };
 
     document.querySelector('#highpassRB').checked = highpass;
@@ -133,7 +101,7 @@ function setupUI(canvasElement) {
         highpass = e.target.value;
         document.querySelector('#soundFilterSlider').value = 0;
         document.querySelector("#soundFilterValue").value = 0;
-        audio.toggleHighshelf(highpass, "highpass"); // turn on or turn off the filter, depending on the value of `highshelf`!
+        audio.toggleSoundModes(highpass, "highpass");
     };
 
     document.querySelector('#lowpassRB').checked = lowpass;
@@ -142,93 +110,87 @@ function setupUI(canvasElement) {
         lowpass = e.target.value;
         document.querySelector('#soundFilterSlider').value = 0;
         document.querySelector("#soundFilterValue").value = 0;
-        audio.toggleHighshelf(lowpass, "lowpass"); // turn on or turn off the filter, depending on the value of `highshelf`!
+        audio.toggleSoundModes(lowpass, "lowpass");
     };
 
     document.querySelector('#bandpassRB').checked = bandpass;
 
-    document.querySelector('#lowpassRB').onchange = e => {
+    document.querySelector('#bandpassRB').onchange = e => {
         bandpass = e.target.value;
         document.querySelector('#soundFilterSlider').value = 0;
         document.querySelector("#soundFilterValue").value = 0;
-        audio.toggleHighshelf(bandpass, "bandpass"); // turn on or turn off the filter, depending on the value of `highshelf`!
+        audio.toggleSoundModes(bandpass, "bandpass");
     };
 
     document.querySelector('#peakingRB').checked = peaking;
-
 
     document.querySelector('#peakingRB').onchange = e => {
         peaking = e.target.value;
         document.querySelector('#soundFilterSlider').value = 0;
         document.querySelector("#soundFilterValue").value = 0;
-        audio.toggleHighshelf(peaking, "peaking"); // turn on or turn off the filter, depending on the value of `highshelf`!
+        audio.toggleSoundModes(peaking, "peaking");
     };
 
-    document.querySelector('#notchRB').checked = notch;
-
-
-    document.querySelector('#notchRB').onchange = e => {
-        notch = e.target.value;
-        document.querySelector('#soundFilterSlider').value = 0;
-        document.querySelector("#soundFilterValue").value = 0;
-        audio.toggleHighshelf(notch, "notch"); // turn on or turn off the filter, depending on the value of `highshelf`!
-    };
-
-    document.querySelector('#allpassRB').checked = allpass;
-
-
-    document.querySelector('#allpassRB').onchange = e => {
-        allpass = e.target.value;
-        document.querySelector('#soundFilterSlider').value = 0;
-        document.querySelector("#soundFilterValue").value = 0;
-        audio.toggleHighshelf(allpass, "allpass"); // turn on or turn off the filter, depending on the value of `highshelf`!
-    };
-    // // III. 
-    // audio.toggleHighshelf(highshelf); // when the app starts up, turn on or turn off the filter, depending on the value of `highshelf`!
-    // // document.querySelector('#echoCB').checked = echo; // `highshelf` is a boolean we will declare in a second
-
-    // // II. change the value of `highshelf` every time the high shelf checkbox changes state
-    // document.querySelector('#echoCB').onchange = e => {
-    //     echo = e.target.checked;
-    //     audio.toggleEcho(echo); // turn on or turn off the filter, depending on the value of `highshelf`!
-    // };
-
-    // audio.toggleEcho(echo);
-
-    // add .onclick event to button
     fsButton.onclick = e => {
         console.log("init called");
         utils.goFullscreen(canvasElement);
     };
 
-
-
-    //D-hookup track <select>
     let trackSelect = document.querySelector("#trackSelect");
-    //add .onchange event to <select>
     trackSelect.onchange = e => {
-
         audioControls(audioElement, e.target.value);
         audio.loadSoundFile(e.target.value);
     };
-
 
     document.querySelector("#gradientCB").onchange = function(e) {
         drawParams.showGradientBackground = e.target.checked;
         canvas.draw(drawParams.showGradient);
     };
 
-
-    document.querySelector("#circlesCB").onchange = function(e) {
+    document.querySelector("#circlesRB").onchange = function(e) {
         drawParams.showCircleBarDisplay = e.target.checked;
+        drawParams.showRectangleBarDisplay = false;
+        drawParams.showCircleBackground = false;
+        drawParams.showPhyllotaxis = false;
+        drawParams.showQuadraticCurve = false;
         canvas.draw(drawParams.showCircleBarDisplay);
     };
 
-    document.querySelector("#rectanglesCB").onchange = function(e) {
+    document.querySelector("#rectanglesRB").onchange = function(e) {
         drawParams.showRectangleBarDisplay = e.target.checked;
+        drawParams.showCircleBarDisplay = false;
+        drawParams.showCircleBackground = false;
+        drawParams.showPhyllotaxis = false;
+        drawParams.showQuadraticCurve = false;
         canvas.draw(drawParams.showRectangleBarDisplay);
     };
 
+    document.querySelector("#circleBackgroundRB").onchange = function(e) {
+        drawParams.showCircleBackground = e.target.checked;
+        drawParams.showCircleBarDisplay = false;
+        drawParams.showRectangleBarDisplay = false;
+        drawParams.showPhyllotaxis = false;
+        drawParams.showQuadraticCurve = false;
+        canvas.draw(drawParams.showCircleBackground);
+    };
+
+    document.querySelector("#phyllotaxisRB").onchange = function(e) {
+        drawParams.showPhyllotaxis = e.target.checked;
+        drawParams.showCircleBarDisplay = false;
+        drawParams.showRectangleBarDisplay = false;
+        drawParams.showCircleBackground = false;
+        drawParams.showQuadraticCurve = false;
+        canvas.draw(drawParams.showPhyllotaxis);
+    };
+
+    document.querySelector("#quadraticCurveRB").onchange = function(e) {
+        drawParams.showQuadraticCurve = e.target.checked;
+        drawParams.showCircleBarDisplay = false;
+        drawParams.showRectangleBarDisplay = false;
+        drawParams.showCircleBackground = false;
+        drawParams.showPhyllotaxis = false;
+        canvas.draw(drawParams.showQuadraticCurve);
+    };
 
     document.querySelector("#modesCB").onchange = function(e) {
         drawParams.showModes = e.target.checked;
@@ -250,7 +212,7 @@ function setupUI(canvasElement) {
         canvas.draw(drawParams.showEmboss);
     };
 
-    document.querySelector(".tintCB").onchange = function(e) {
+    document.querySelector("#tintCB").onchange = function(e) {
         drawParams.showTint = e.target.checked;
         canvas.draw(drawParams.showTint);
     };
@@ -260,92 +222,36 @@ function setupUI(canvasElement) {
         canvas.draw(drawParams.showSepia);
     };
 
-
-
     document.querySelector("#shiftRgbCB").onchange = function(e) {
         drawParams.showShiftRGB = e.target.checked;
         canvas.draw(drawParams.showShiftRGB);
     };
 
-    document.querySelector("#circleBackgroundCB").onchange = function(e) {
-        drawParams.showCircleBackground = e.target.checked;
-
-        canvas.draw(drawParams.showCircleBackground);
-    };
-
-    document.querySelector("#phyllotaxisCB").onchange = function(e) {
-        drawParams.showPhyllotaxis = e.target.checked;
-
-        canvas.draw(drawParams.showPhyllotaxis);
-    };
-
-    document.querySelector("#quadraticCurveCB").onchange = function(e) {
-        drawParams.showQuadraticCurve = e.target.checked;
-        canvas.draw(drawParams.showQuadraticCurve);
-    };
-
-    document.querySelector(".waveform").onchange = function(e) {
-
+    document.querySelector("#waveform").onchange = function(e) {
         drawParams.showWaveform = e.target.checked;
         drawParams.showFrequency = false
     };
 
-    document.querySelector(".frequency").onchange = function(e) {
+    document.querySelector("#frequency").onchange = function(e) {
 
         drawParams.showFrequency = e.target.checked;
         drawParams.showWaveform = false
     };
+}
 
-} // end setupUI
-
+//Looping the visuals
 function loop() {
-    /* NOTE: This is temporary testing code that we will delete in Part II */
     requestAnimationFrame(loop);
-
-
-
-
     drawParams.showLineBackground = true;
-
     canvas.draw(drawParams.showLineBackground);
     drawParams.showBarDisplay = true;
     canvas.draw(drawParams.showBarDisplay);
-
     canvas.draw(drawParams);
-    // 1) create a byte array (values of 0-255) to hold the audio data
-    // normally, we do this once when the program starts up, NOT every frame
-    // if (drawParams.showWaveform) {
-
-    // let audioData = new Uint8Array(audio.analyserNode.fftSize / 2);
-
-    // //     // // 2) populate the array of audio data *by reference* (i.e. by its address)
-    // audio.analyserNode.getByteFrequencyData(audioData);
-    // }
-
-    // // 3) log out the array and the average loudness (amplitude) of all of the frequency bins
-    // // console.log(audioData);
-
-    // // console.log("-----Audio Stats-----");
-    // let totalLoudness = audioData.reduce((total, num) => total + num);
-    // let averageLoudness = totalLoudness / (audio.analyserNode.fftSize / 2);
-    // let minLoudness = Math.min(...audioData); // ooh - the ES6 spread operator is handy!
-    // let maxLoudness = Math.max(...audioData); // ditto!
-    // // Now look at loudness in a specific bin
-    // // 22050 kHz divided by 128 bins = 172.23 kHz per bin
-    // // the 12th element in array represents loudness at 2.067 kHz
-    // let loudnessAt2K = audioData[11];
-    // // console.log(`averageLoudness = ${averageLoudness}`);
-    // // console.log(`minLoudness = ${minLoudness}`);
-    // // console.log(`maxLoudness = ${maxLoudness}`);
-    // // console.log(`loudnessAt2K = ${loudnessAt2K}`);
-    // // console.log("---------------------");
 }
 
+//When there is a track change, change filepath
 function audioControls(audioElement, filePath) {
     audioElement.src = filePath;
-
 }
-
-
 
 export { init };

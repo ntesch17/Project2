@@ -25,7 +25,7 @@
                         <option value="media/One More Time.mp3">One More Time</option>
                     </select>
                 </label>
-                <audio controls="controls" autostart="true" preload="auto" id="audioControls" type="audio" data-playing="no"></audio>
+                <audio controls="controls" preload="auto" id="audioControls" data-playing="no"></audio>
                 <!-- <button id="playButton" data-playing="no"></button> -->
                 <button id="fsButton">Full Screen</button>
 
@@ -37,26 +37,19 @@
     </main>
     <section>
         <label class="label">Audio Type:</label>
-        <input type="radio" class="frequency" name="dataDisplay" value="frequency" checked>
-        <label class="frequency" for="frequency">Frequency</label>
-        <input type="radio" class="waveform" name="dataDisplay" value="waveform">
-        <label class="waveform" for="waveform">Waveform</label>
+        <input type="radio" id="frequency" name="dataDisplay1" value="frequencyVal" checked>
+        <label class="label2" for="frequency">Frequency</label>
+        <input type="radio" id="waveform" name="dataDisplay1" value="waveform">
+        <label class="label2" for="waveform">Waveform</label>
     </section>
     <section>
         <label class="label">Biquid Filter Select:</label>
-
-        <span class="types2"><label for="noneRB">No Biquid Filter</label><input type="radio" name="biquidFilters" id="noneRB" checked></span>
         <span class="types2"><label for="highshelfRB">Highshelf Filter</label><input type="radio" name="biquidFilters" id="highshelfRB"></span>
         <span class="types2"><label for="lowshelfRB">Lowshelf Filter</label><input type="radio" name="biquidFilters" id="lowshelfRB"></span>
         <span class="types2"><label for="highpassRB">Highpass Filter</label><input type="radio" name="biquidFilters" id="highpassRB"></span>
         <span class="types2"><label for="lowpassRB">Lowpass Filter</label><input type="radio" name="biquidFilters" id="lowpassRB"></span>
         <span class="types2"><label for="bandpassRB">Bandpass Filter</label><input type="radio" name="biquidFilters" id="bandpassRB"></span>
         <span class="types2"><label for="peakingRB">Peaking Filter</label><input type="radio" name="biquidFilters" id="peakingRB"></span>
-        <span class="types2"><label for="notchRB">Notch Filter</label><input type="radio" name="biquidFilters" id="notchRB"></span>
-        <span class="types2"><label for="allpassRB">Allpass Filter</label><input type="radio" name="biquidFilters" id="allpassRB"></span>
-
-
-
     </section>
     <section>
         <span class="label">Biquid Filter Adjusting: <input type="range" min="0" max="25" value="0" id="soundFilterSlider"></span>
@@ -68,19 +61,22 @@
         <label class="label">Background Types:</label>
         <div class="types">
             <span><input type="checkbox" id="gradientCB"><label for="gradientCB">Show Gradient</label></span>
-
-
         </div>
     </section>
 
     <section>
         <label class="label">Visual Effect Types:</label>
         <div class="types">
-            <span><input type="checkbox" id="circlesCB"><label for="circlesCB">Show Circle Bar Display</label></span>
-            <span><input type="checkbox" id="rectanglesCB"><label for="rectanglesCB">Show Rectangle Bar Display</label></span>
-            <span><input type="checkbox" id="circleBackgroundCB"><label for="circleBackgroundCB">Show Circle Display</label></span>
-            <span><input type="checkbox" id="phyllotaxisCB"><label for="phyllotaxisCB">Show Phyllotaxis</label></span>
-            <span><input type="checkbox" id="quadraticCurveCB"><label for="quadraticCurveCB">Show Quadratic Curve Display</label></span>
+            <input type="radio" id="circlesRB" name="dataDisplay2" value="circlesRB">
+            <label class="label2" for="circlesRB">Show Circle Bar Display</label>
+            <input type="radio" id="rectanglesRB" name="dataDisplay2" value="rectanglesRB">
+            <label class="label2" for="rectanglesRB">Show Stereo Display</label>
+            <input type="radio" id="circleBackgroundRB" name="dataDisplay2" value="circleBackgroundRB">
+            <label class="label2" for="circleBackgroundRB">Show Circle Display</label>
+            <input type="radio" id="phyllotaxisRB" name="dataDisplay2" value="phyllotaxisRB">
+            <label class="label2" for="phyllotaxisRB">Show Phyllotaxis Display</label>
+            <input type="radio" id="quadraticCurveRB" name="dataDisplay2" value="quadraticCurveRB">
+            <label class="label2" for="quadraticCurveRB">Show Quadratic Curve Display</label>
         </div>
     </section>
 
@@ -98,7 +94,7 @@
     <br>
     <section>
         <label class="label">Tint Select:</label>
-        <input type="checkbox" class="tintCB"><label class="tintCB" for="tintCB">Show Tint</label>
+        <input type="checkbox" id="tintCB"><label class="label2" for="tintCB">Show Tint</label>
         <h3>Red Value (RGB):</h3>
         <input type="range" min="0" max="255" value="0" id="redRange">
         <p class="value">Red Value: </p><span id="redValue">0</span>

@@ -9,14 +9,14 @@ body {
         margin: auto;
         position: absolute;
         top: 290px;
-        left: 140px;
+        left: 240px;
     }
     #desc {
         background-color: #00ccff;
         text-align: center;
         margin-top: 470px;
         width: 800px;
-        margin-left: 140px;
+        margin-left: 240px;
         font-size: 25px;
     }
 }
@@ -27,37 +27,19 @@ body {
         margin: auto;
         position: absolute;
         top: 290px;
-        left: 140px;
+        left: 340px;
     }
     #desc {
         background-color: #00ccff;
         text-align: center;
         margin-top: 470px;
         width: 800px;
-        margin-left: 140px;
+        margin-left: 340px;
         font-size: 25px;
     }
 }
 
 @media (min-width: 1700px) {
-    canvas {
-        border: 8px solid #5e60ce;
-        margin: auto;
-        position: absolute;
-        top: 290px;
-        left: 390px;
-    }
-    #desc {
-        background-color: #00ccff;
-        text-align: center;
-        margin-top: 470px;
-        width: 800px;
-        margin-left: 390px;
-        font-size: 25px;
-    }
-}
-
-@media (min-width: 1900px) {
     canvas {
         border: 8px solid #5e60ce;
         margin: auto;
@@ -71,6 +53,24 @@ body {
         margin-top: 470px;
         width: 800px;
         margin-left: 490px;
+        font-size: 25px;
+    }
+}
+
+@media (min-width: 1900px) {
+    canvas {
+        border: 8px solid #5e60ce;
+        margin: auto;
+        position: absolute;
+        top: 290px;
+        left: 600px;
+    }
+    #desc {
+        background-color: #00ccff;
+        text-align: center;
+        margin-top: 470px;
+        width: 800px;
+        margin-left: 600px;
         font-size: 25px;
     }
 }
@@ -99,7 +99,7 @@ body {
         margin: auto;
         position: absolute;
         top: 290px;
-        margin-left: 690px;
+        margin-left: 290px;
     }
     #desc {
         background-color: #00ccff;
@@ -107,7 +107,7 @@ body {
         margin-top: 470px;
         width: 800px;
         font-size: 25px;
-        margin-left: 690px;
+        margin-left: 890px;
     }
 }
 
@@ -177,6 +177,14 @@ html {
     margin-right: 1em;
 }
 
+.label2 {
+    font-size: 15px;
+    color: #80ffdb;
+    margin: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
 .types {
     font-size: 20px;
     color: #80ffdb;
@@ -192,7 +200,7 @@ html {
     margin-right: 1em;
 }
 
-.tintCB {
+#tintCB {
     font-size: 10px;
     color: #80ffdb;
     margin: auto;
@@ -238,13 +246,13 @@ h3 {
     display: inline-flex;
 }
 
-.frequency {
+#frequency {
     margin: auto;
     color: #80ffdb;
     margin-left: 1em;
 }
 
-.waveform {
+#waveform {
     margin: auto;
     color: #80ffdb;
     margin-left: 1em;

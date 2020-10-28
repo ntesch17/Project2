@@ -1,7 +1,4 @@
-// Why are the all of these ES6 Arrow functions instead of regular JS functions?
-// No particular reason, actually, just that it's good for you to get used to this syntax
-// For Project 2 - any code added here MUST also use arrow function syntax
-
+//Utility functions for random numbers, colors, gradients, and specific shape types
 const makeColor = (red, green, blue, alpha = 1) => {
     return `rgba(${red},${green},${blue},${alpha})`;
 };
@@ -11,7 +8,7 @@ const getRandom = (min, max) => {
 };
 
 const getRandomColor = () => {
-    const floor = 35; // so that colors are not too bright or too dark 
+    const floor = 35;
     const getByte = () => getRandom(floor, 255 - floor);
     return `rgba(${getByte()},${getByte()},${getByte()},1)`;
 };
@@ -30,16 +27,72 @@ const goFullscreen = (element) => {
         element.requestFullscreen();
     } else if (element.mozRequestFullscreen) {
         element.mozRequestFullscreen();
-    } else if (element.mozRequestFullScreen) { // camel-cased 'S' was changed to 's' in spec
+    } else if (element.mozRequestFullScreen) {
         element.mozRequestFullScreen();
     } else if (element.webkitRequestFullscreen) {
         element.webkitRequestFullscreen();
     }
-    // .. and do nothing if the method is not supported
 };
 
-const clearCanvas = (ctx, w, h) => {
-    ctx.clearRect(0, 0, w, h);
+const drawRectangle = (ctx, x, y, width, height, color) => {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.rect(x, y, width, height);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+};
+
+const drawRectangleOutlines = (ctx, x, y, x2, y2, color) => {
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.strokeRect(x, y, x2, y2);
+    ctx.restore();
+};
+
+const drawCircleOutlines = (ctx, x, y, radius, color) => {
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+};
+
+const drawCircle = (ctx, x, y, radius, color) => {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+};
+
+const drawLine = (ctx, mX, mY, mX2, mY2, color) => {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(mX, mY);
+    ctx.lineTo(mX2, mY2);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
 }
 
-export { makeColor, clearCanvas, getRandom, getRandomColor, getLinearGradient, goFullscreen };
+const drawQuadraticCurve = (ctx, x, y, x2, y2, width, height, color) => {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(x2, y2, width, height);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+}
+
+export { makeColor, getRandom, getRandomColor, getLinearGradient, drawQuadraticCurve, drawRectangleOutlines, drawCircleOutlines, drawCircle, drawLine, drawRectangle, goFullscreen };

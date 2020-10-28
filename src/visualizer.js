@@ -13,143 +13,76 @@ import * as audio from './audio.js';
 let ctx, canvasWidth, canvasHeight, gradient, analyserNode, audioData;
 let red, blue, green;
 let r, g, b;
-let n = 0;
+let n = 0,
+    c = 0,
+    a = 0,
+    r1 = 0,
+    x1 = 0,
+    y1 = 0;
 let audioElement;
+const drawParams = Object.freeze({
+    "zero": 0,
+    "twenty": 20,
+    "twentyFive": 25,
+    "onePointFive": 1.5,
+    "pointFive": .50,
+    "ten": 10,
+    "five": 5,
+    "twoHundred": 200,
+    "twoHundredTen": 210,
+    "oneHundredNinty": 190,
+    "oneThousandFiveHundred": 1500,
+    "eightHundred": 800,
+    "fourHundred": 400,
+    "two": 2,
+    "Div1": -137.5,
 
+});
 let modes = ["source-over", "exclusion", "luminosity", "xor", "multiply", "hard-light", "difference", "hue", "saturation", "color"];
 
 function setupCanvas(canvasElement, analyserNodeRef) {
-    // create drawing context
+    // create drawing context.
     ctx = canvasElement.getContext("2d");
+
+    //Gathering canvas width and height.
     canvasWidth = canvasElement.width;
     canvasHeight = canvasElement.height;
+
+    //Grabbing audio tag.
     audioElement = document.querySelector('audio');
-    // create a gradient that runs top to bottom
-    gradient = utils.getLinearGradient(ctx, 0, 0, 0, canvasHeight, [{ percent: 0, color: "blue" }, { percent: .25, color: "green" }, { percent: .5, color: "yellow" }, { percent: .75, color: "red" }, { percent: 1, color: "magenta" }]);
-    // keep a reference to the analyser node
+
+    //Setting up analyser node for visuals.
     analyserNode = analyserNodeRef;
-    // this is the array where the analyser data will be stored
-    audioData = new Uint8Array(analyserNode.fftSize / 2);
+
+    //Audio data being put inside of an array per sound.
+    audioData = new Uint8Array(analyserNode.fftSize / drawParams.two);
 }
 
 function draw(params = {}) {
-    // 1 - populate the audioData array with the frequency data from the analyserNode
-    // notice these arrays are passed "by reference" 
+
+    //Checks if frequency or waveform of the data visualizer is checked.
     if (params.showWaveform) {
         analyserNode.getByteTimeDomainData(audioData);
-
     } else {
-
         analyserNode.getByteFrequencyData(audioData);
-
-
     }
 
+    audioElement.addEventListener('pause', function() {
+        n = 0, a = 0, c = 0, x1 = 0, y1 = 0;
+    });
 
-
-
-    // audioElement.addEventListener('pause', function() {
-
-    //     utils.clearCanvas(ctx, canvasWidth, canvasHeight);
-
-    // });
-    // if (params.showWaveform) {
-    //     audio.setupWebaudioWav(DEFAULTS.sound1);
-
-    // }
-    // if (params.showWaveform == false) {
-    //     audio.setupWebaudioFreq(DEFAULTS.sound1);
-
-    // }
-    ctx.save();
-
+    //Checks if color modes are checked. If so it cycles through each mode through for loop.
     if (params.showModes) {
+        ctx.save();
         for (let i = 0; i < modes.length; i++) {
             ctx.globalAlpha = 1;
             ctx.globalCompositeOperation = modes[i];
         }
-        ctx.fillStyle = "black";
-        ctx.globalAlpha = .1;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        ctx.fill();
-    }
-    ctx.restore();
-
-    // 2 - draw background
-
-
-
-
-
-    if (params.showPhyllotaxis) {
-        ctx.save();
-        for (let i = 0; i < audioData.length; i++) {
-            if (audioData[i] > 210) {
-                r = 10;
-                g = 10;
-                b = 255;
-            } else if (audioData[i] > 200) {
-                r = 255;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 190) {
-                r = 204;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 180) {
-                r = 0;
-                g = 0;
-                b = 255;
-            } else if (audioData[i] > 130) {
-                r = 252;
-                g = 175;
-                b = 60;
-            } else if (audioData[i] > 90) {
-                r = 60;
-                g = 252;
-                b = 73;
-            } else if (audioData[i] > 50) {
-                r = 207;
-                g = 60;
-                b = 252;
-            } else {
-                r = 150;
-                g = 150;
-                b = 255;
-            }
-            n += .1;
-            let c = audioData[i] / canvasHeight;
-            let a = n * -137.5 * (Math.PI / 180);
-            let r1 = c * Math.sqrt(n);
-
-            let x = r1 * Math.cos(a) + canvasWidth / 2;
-            let y = r1 * Math.sin(a) + canvasHeight / 2;
-
-            ctx.fillStyle = `rgb(${r},${g},${b})`;
-            ctx.globalAlpha = 1;
-            ctx.beginPath();
-            ctx.arc(x + 210, y + 10, 10, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.fill();
-
-            // ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            // ctx.beginPath();
-            // ctx.moveTo(x - 300, y);
-            // ctx.lineTo(x + 300, y + r1 * Math.sin(0.2));
-            // ctx.closePath();
-            // ctx.fill();
-            // ctx.stroke();
-
-            ctx.fillStyle = `rgb(${r},${g},${b})`;
-            ctx.beginPath();
-            ctx.rect(x - 200, y, 20, 20);
-            ctx.closePath();
-            ctx.fill();
-
-        }
+        utils.drawRectangle(ctx, drawParams.zero, drawParams.zero, canvasWidth, canvasHeight);
         ctx.restore();
     }
 
+    //If tint is checked, users can create there own tint using the scrollers for the R,G,B values
     if (params.showTint) {
         ctx.save();
         document.querySelector("#redRange").onchange = function(e) {
@@ -186,155 +119,255 @@ function draw(params = {}) {
             }
         };
 
-        ctx.fillStyle = utils.makeColor(red, green, blue, 1);
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        ctx.fill();
-        ctx.restore()
-    }
-
-    //3 - draw gradient
-    if (params.showGradientBackground && params.showWaveform) {
-        ctx.save();
-        let rgb;
-
-        //ctx.fillStyle = gradient;
-        for (let i = 0; i < audioData.length; i++) {
-            if (audioData[i] > 210) {
-                r = 10;
-                g = 10;
-                b = 255;
-            } else if (audioData[i] > 200) {
-                r = 255;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 190) {
-                r = 204;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 180) {
-                r = 0;
-                g = 0;
-                b = 255;
-            } else if (audioData[i] > 130) {
-                r = 252;
-                g = 175;
-                b = 60;
-            } else if (audioData[i] > 90) {
-                r = 60;
-                g = 252;
-                b = 73;
-            } else if (audioData[i] > 50) {
-                r = 207;
-                g = 60;
-                b = 252;
-            } else {
-                r = 150;
-                g = 150;
-                b = 255;
-            }
-
-            rgb = `rgb(${r},${g},${b})`;
-            let rgb2 = `rgb(${r},${g},${b})`;
-            let grd = ctx.createLinearGradient(0, 0, 0, canvasHeight);
-            grd.addColorStop(0, rgb);
-            grd.addColorStop(1, rgb2);
-
-
-            ctx.fillStyle = grd;
-            ctx.globalAlpha = .01;
-            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-            ctx.fill();
-            ctx.restore();
-        }
-
-
-    } else if (params.showGradientBackground) {
-        ctx.save();
-
-        let grd = ctx.createLinearGradient(0, 0, 0, canvasHeight);
-        grd.addColorStop(0, utils.getRandomColor());
-        grd.addColorStop(0.2, utils.getRandomColor());
-        grd.addColorStop(0.4, utils.getRandomColor());
-        grd.addColorStop(0.6, utils.getRandomColor());
-        grd.addColorStop(0.8, utils.getRandomColor());
-        grd.addColorStop(1, utils.getRandomColor());
-
-        ctx.fillStyle = grd;
-        ctx.globalAlpha = .7;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        ctx.fill();
+        utils.drawRectangle(ctx, drawParams.zero, drawParams.zero, canvasWidth, canvasHeight, utils.makeColor(red, green, blue, 1))
         ctx.restore();
     }
 
-    if (params.showQuadraticCurve) {
-        let averageLoudness = 0;
-        let range = canvasHeight;
-        for (let i = 0; i < audioData.length; i++) {
-            averageLoudness += audioData[i] / canvasHeight / 2;
-            averageLoudness /= utils.getRandom(0, 255) + averageLoudness;
+    //Changes the color of each shape created to the frequency of the sound
+    //https://medium.com/@gg_gina/how-to-music-visualizer-web-audio-api-aa007f4ea525
+    for (let x = 0; x < audioData.length; x++) {
+        if (audioData[x] > 210) {
+            r = 10;
+            g = 10;
+            b = 255;
+        } else if (audioData[x] > 200) {
+            r = 255;
+            g = 255;
+            b = 0;
+        } else if (audioData[x] > 190) {
+            r = 204;
+            g = 255;
+            b = 0;
+        } else if (audioData[x] > 180) {
+            r = 0;
+            g = 0;
+            b = 255;
+        } else if (audioData[x] > 130) {
+            r = 252;
+            g = 175;
+            b = 60;
+        } else if (audioData[x] > 90) {
+            r = 60;
+            g = 252;
+            b = 73;
+        } else if (audioData[x] > 50) {
+            r = 207;
+            g = 60;
+            b = 252;
+        } else {
+            r = 150;
+            g = 150;
+            b = 255;
+        }
+
+        //Creating phyllotaxis that changes colors to the frequency and grows as the song continues. Else if its unchecked it resets all values.
+        if (params.showPhyllotaxis) {
             ctx.save();
-            ctx.lineWidth = 2;
-            if (audioData[i] > 210) {
-                r = 10;
-                g = 10;
-                b = 255;
-            } else if (audioData[i] > 200) {
-                r = 255;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 190) {
-                r = 204;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 180) {
-                r = 0;
-                g = 0;
-                b = 255;
-            } else if (audioData[i] > 130) {
-                r = 252;
-                g = 175;
-                b = 60;
-            } else if (audioData[i] > 90) {
-                r = 60;
-                g = 252;
-                b = 73;
-            } else if (audioData[i] > 50) {
-                r = 207;
-                g = 60;
-                b = 252;
-            } else {
-                r = 150;
-                g = 150;
-                b = 255;
-            }
 
+            n += .1;
+            c = audioData[x] / canvasHeight;
+            a = n * drawParams.Div1 * (Math.PI / drawParams.twoHundred - 20);
+            r1 = c * Math.sqrt(n);
 
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
+            x1 = r1 * Math.cos(a) + canvasWidth / drawParams.two;
+            y1 = r1 * Math.sin(a) + canvasHeight / drawParams.two;
+
             ctx.globalAlpha = 1;
-            ctx.beginPath();
-            ctx.moveTo(canvasWidth / 4, range * averageLoudness * 2);
-            ctx.quadraticCurveTo(canvasWidth / 2, range * averageLoudness / 2, canvasWidth / 2, canvasHeight - 400);
-            ctx.moveTo(canvasWidth - 190, range * averageLoudness * 2);
-            ctx.quadraticCurveTo(canvasWidth / 2, range * averageLoudness / 2, canvasWidth / 2, canvasHeight - 400);
-            ctx.moveTo(canvasWidth, range * averageLoudness * 2);
-            ctx.quadraticCurveTo(canvasWidth / 2, range * averageLoudness * 2, canvasWidth + 20, canvasHeight - 415);
-            ctx.moveTo(canvasWidth - 800, range * averageLoudness * 2);
-            ctx.quadraticCurveTo(canvasWidth / 2, range * averageLoudness * 2, canvasWidth - 785, canvasHeight - 415);
-            ctx.stroke();
+
+            utils.drawCircle(ctx, x1 + drawParams.twoHundredTen - x, y1 + drawParams.ten - x, drawParams.ten, `rgb(${r},${g},${b})`);
+            utils.drawRectangle(ctx, x1 + drawParams.twoHundredTen + x, y1 + drawParams.ten + x, drawParams.twenty, drawParams.twenty, `rgb(${r},${g},${b})`);
+            utils.drawCircle(ctx, x1 + drawParams.twoHundredTen + x, y1 + drawParams.ten - x, drawParams.ten, `rgb(${r},${g},${b})`);
+            utils.drawRectangle(ctx, x1 + drawParams.twoHundredTen - x, y1 + drawParams.ten + x, drawParams.twenty, drawParams.twenty, `rgb(${r},${g},${b})`);
+
+            utils.drawRectangle(ctx, x1 - drawParams.twoHundred - x, y1 - x, drawParams.twenty, drawParams.twenty, `rgb(${r},${g},${b})`);
+            utils.drawCircle(ctx, x1 - drawParams.twoHundred + x, y1 + x, drawParams.ten, `rgb(${r},${g},${b})`);
+            utils.drawRectangle(ctx, x1 - drawParams.twoHundred + x, y1 - x, drawParams.twenty, drawParams.twenty, `rgb(${r},${g},${b})`);
+            utils.drawCircle(ctx, x1 - drawParams.twoHundred - x, y1 + x, drawParams.ten, `rgb(${r},${g},${b})`);
+
+            ctx.restore();
+        } else if (params.showPhyllotaxis == false) {
+            n = 0, a = 0, c = 0, x1 = 0, y1 = 0;
+        }
+
+        //If gradient is checked and waveform, create a gradient that moves with the tone of the frequency.
+        if (params.showGradientBackground && params.showWaveform) {
+            ctx.save();
+            gradient = utils.getLinearGradient(ctx, 0, 0, 0, canvasHeight, [{ percent: 0, color: utils.makeColor(r, g, b, 1) }, { percent: .25, color: utils.makeColor(r, g, b, 1) }, { percent: .5, color: utils.makeColor(r, g, b, 1) }]);
+            ctx.globalAlpha = .01;
+            ctx.fillStyle = gradient;
+            utils.drawRectangle(ctx, drawParams.zero, drawParams.zero, canvasWidth, canvasHeight);
+            ctx.restore();
+        } else if (params.showGradientBackground) {
+            ctx.save();
+            gradient = utils.getLinearGradient(ctx, 0, 0, 0, canvasHeight, [{ percent: 0, color: utils.getRandomColor() }, { percent: .25, color: utils.getRandomColor() }, { percent: .5, color: utils.getRandomColor() }, { percent: .75, color: utils.getRandomColor() }, { percent: 1, color: utils.getRandomColor() }]);
+            ctx.fillStyle = gradient;
+            ctx.globalAlpha = .02;
+            utils.drawRectangle(ctx, drawParams.zero, drawParams.zero, canvasWidth, canvasHeight);
+            ctx.restore();
+        }
+
+        //Create a quadratic curve if checked that moves to the beat of the frequency and changes colors.
+        if (params.showQuadraticCurve) {
+            ctx.save();
+            let averageLoudness = 0;
+            let range = canvasHeight;
+            averageLoudness += audioData[x] / canvasHeight / drawParams.two;
+            averageLoudness /= utils.getRandom(0, 255) + averageLoudness;
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 1;
+            utils.drawQuadraticCurve(ctx, canvasWidth / 4, range * averageLoudness * drawParams.two, canvasWidth / drawParams.two, range * averageLoudness / drawParams.two, canvasWidth / drawParams.two, canvasHeight - drawParams.fourHundred, `rgb(${r},${g},${b})`);
+            utils.drawQuadraticCurve(ctx, canvasWidth - drawParams.oneHundredNinty, range * averageLoudness * drawParams.two, canvasWidth / drawParams.two, range * averageLoudness / drawParams.two, canvasWidth / drawParams.two, canvasHeight - drawParams.fourHundred, `rgb(${r},${g},${b})`);
+            utils.drawQuadraticCurve(ctx, canvasWidth, range * averageLoudness * drawParams.two, canvasWidth / drawParams.two, range * averageLoudness * drawParams.two, canvasWidth + drawParams.twenty, canvasHeight - drawParams.fourHundred + 15, `rgb(${r},${g},${b})`);
+            utils.drawQuadraticCurve(ctx, canvasWidth - drawParams.eightHundred, range * averageLoudness * drawParams.two, canvasWidth / drawParams.two, range * averageLoudness * drawParams.two, canvasWidth - drawParams.eightHundred - 15, canvasHeight - drawParams.fourHundred + 15, `rgb(${r},${g},${b})`);
+            ctx.restore();
+        }
+
+        //Rectangle display that shoots out squares based on the frequency of the sound, the circles are there to replicate speakers.
+        if (params.showRectangleBarDisplay) {
+            ctx.save();
+            let center_x = canvasWidth / drawParams.two - drawParams.twoHundred;
+            let center_y = canvasHeight / drawParams.two;
+            let center_x2 = canvasWidth / drawParams.two + drawParams.twoHundred;
+
+            let radius = utils.getRandom(50, 250);
+            let maxRadius = canvasHeight / drawParams.two + 1;
+            let percent = audioData[x] / 255;
+            let rads = Math.PI * drawParams.ten + audioData[x];
+
+            let rectX1 = center_x + Math.cos(rads * x) * (radius);
+            let rectX2 = center_x2 + Math.cos(rads * x) * (radius);
+            let rectY = center_y + Math.sin(rads * x) * (radius);
+
+            let circleRadius = percent * maxRadius;
+
+            ctx.globalAlpha = .2;
+            ctx.lineWidth = 1;
+            utils.drawRectangle(ctx, rectX1, rectY, drawParams.twenty, drawParams.twenty, `rgb(${r},${g},${b})`);
+            utils.drawRectangle(ctx, rectX2, rectY, drawParams.twenty, drawParams.twenty, `rgb(${r},${g},${b})`);
+
+            ctx.globalAlpha = .2;
+            ctx.rotate(-.01 * drawParams.two);
+            utils.drawCircleOutlines(ctx, canvasWidth / drawParams.two - drawParams.oneHundredNinty - x, canvasHeight / drawParams.two + drawParams.ten, circleRadius, `rgb(${r},${g},${b})`);
+
+            ctx.globalAlpha = .2;
+
+            utils.drawCircleOutlines(ctx, canvasWidth / drawParams.two - drawParams.oneHundredNinty - x, canvasHeight / drawParams.two + drawParams.ten, circleRadius * drawParams.onePointFive, `rgb(${r},${g},${b})`);
+
+            ctx.globalAlpha = .2;
+
+            utils.drawCircleOutlines(ctx, canvasWidth / drawParams.two - drawParams.oneHundredNinty - x, canvasHeight / drawParams.two + drawParams.ten, circleRadius * drawParams.pointFive, `rgb(${r},${g},${b})`);
+
+            ctx.globalAlpha = .2;
+
+            utils.drawCircleOutlines(ctx, canvasWidth / drawParams.two + drawParams.twoHundredTen - x, canvasHeight / drawParams.two + drawParams.ten, circleRadius, `rgb(${r},${g},${b})`);
+
+            ctx.globalAlpha = .2;
+
+            utils.drawCircleOutlines(ctx, canvasWidth / drawParams.two + drawParams.twoHundredTen - x, canvasHeight / drawParams.two + drawParams.ten, circleRadius * drawParams.onePointFive, `rgb(${r},${g},${b})`);
+
+            ctx.globalAlpha = .2;
+
+            utils.drawCircleOutlines(ctx, canvasWidth / drawParams.two + drawParams.twoHundredTen - x, canvasHeight / drawParams.two + drawParams.ten, circleRadius * drawParams.pointFive, `rgb(${r},${g},${b})`);
+
+
+            ctx.restore();
+        }
+
+        //If the circle background is checked, a circle display moves with the audio data and changes colors accordingly.
+        if (params.showCircleBackground) {
+            ctx.save();
+
+            let maxRadius = canvasHeight / 20;
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two - audioData[x] - drawParams.twoHundred, canvasHeight - x - drawParams.twoHundred, maxRadius, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two + audioData[x] + drawParams.twoHundred, canvasHeight - x - drawParams.twoHundred, maxRadius, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two - audioData[x] - drawParams.twoHundred, x, maxRadius, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two + audioData[x] + drawParams.twoHundred, x, maxRadius, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two - audioData[x] + drawParams.twoHundred, canvasHeight / drawParams.two - x, maxRadius, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two + audioData[x] - drawParams.twoHundred, canvasHeight / drawParams.two - x, maxRadius, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two - audioData[x] + drawParams.twoHundred, x, maxRadius, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two + audioData[x] - drawParams.twoHundred, x, maxRadius, `rgb(${r},${g},${b})`);
+
+            ctx.restore();
+        }
+
+        //Line background is automatically checked, creates the colors in the background that change according to frequency.
+        if (params.showLineBackground) {
+            ctx.save();
+            let width = canvasWidth / audioData.length;
+            let height = canvasHeight / audioData.length;
+
+            let rads = Math.PI * drawParams.two / canvasWidth;
+
+            let lineX1 = canvasWidth / drawParams.twentyFive + rads * x * (drawParams.oneThousandFiveHundred);
+            let lineY1 = canvasHeight / drawParams.twentyFive + rads * x * (drawParams.oneThousandFiveHundred);
+            let x_end = canvasWidth / drawParams.twentyFive + rads * x * (drawParams.oneThousandFiveHundred + width);
+            let y_end = canvasHeight / drawParams.twentyFive + rads * x * (drawParams.oneThousandFiveHundred + height);
+
+            ctx.globalAlpha = 0.1;
+            ctx.lineWidth = 1500;
+            utils.drawLine(ctx, lineX1 - drawParams.ten, lineY1 - drawParams.ten, x_end, y_end, `rgb(${r},${g},${b})`);
+            ctx.restore();
+        }
+
+
+        //Circle Display that shows bars along the circle with colors to the frequency
+        //https://www.kkhaydarov.com/audio-visualizer/
+        if (params.showCircleBarDisplay) {
+            ctx.save();
+            let bars = 118
+            let center_x = canvasWidth / drawParams.two;
+            let center_y = canvasHeight / drawParams.two;
+            let radius = 75;
+
+            utils.drawCircle(ctx, center_x, center_y, radius, `rgb(${r},${g},${b})`);
+
+            let barHeight = audioData[x];
+            let rads = Math.PI * 2 / bars;
+
+            let bar_width = (canvasWidth / audioData.length);
+
+            x1 = center_x + Math.cos(rads * x) * (radius);
+            let y = center_y + Math.sin(rads * x) * (radius);
+            let x_end = center_x + Math.cos(rads * x) * (radius + barHeight);
+            let y_end = center_y + Math.sin(rads * x) * (radius + barHeight);
+
+            let maxRadius = canvasHeight / 4;
+            let percent = audioData[x] / 255;
+            let circleRadius = percent * maxRadius;
+
+            ctx.globalAlpha = 1;
+            ctx.lineWidth = bar_width;
+            utils.drawLine(ctx, x1, y, x_end, y_end, `rgb(${r},${g},${b})`);
+
+            x1 += bar_width + drawParams.five;
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two, canvasHeight / drawParams.two, circleRadius, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two, canvasHeight / drawParams.two, circleRadius * drawParams.onePointFive, `rgb(${r},${g},${b})`);
+
+            utils.drawCircle(ctx, canvasWidth / drawParams.two, canvasHeight / drawParams.two, circleRadius * drawParams.pointFive, `rgb(${r},${g},${b})`);
+
             ctx.restore();
         }
     }
 
-    // 4 - draw bars
+    //Default display, changes colors and height according to the audio data
     if (params.showBarDisplay) {
-
+        ctx.save();
         let barWidth = (canvasWidth / audioData.length);
         let barHeight;
-        let x = 0;
-        ctx.save();
+        x1 = 0;
 
-        let bars = 118 // Set total number of bars you want per frame
+
+        let bars = 200;
 
         for (let i = 0; i < bars; i++) {
             barHeight = audioData[i];
@@ -373,417 +406,96 @@ function draw(params = {}) {
                 b = 255;
             }
 
-            ctx.fillStyle = `rgb(${r},${g},${b})`;
+
             ctx.globalAlpha = 1;
-            ctx.fillRect(x, (canvasHeight - barHeight), barWidth, barHeight);
-            ctx.fill();
-            x += barWidth + 10 // Gives 10px space between each bar
+            utils.drawRectangle(ctx, x1, (canvasHeight - barHeight), barWidth, barHeight, `rgb(${r},${g},${b})`);
+
+            x1 += barWidth + drawParams.five;
         }
         ctx.restore();
     }
 
-
-    if (params.showRectangleBarDisplay) {
-        let center_x = canvasWidth / 2 - 200;
-        let center_y = canvasHeight / 2;
-        let center_x2 = canvasWidth / 2 + 200;
-
-        let radius = utils.getRandom(50, 250);
-        ctx.save();
-        for (let i = 0; i < audioData.length; i++) {
-            let rads = Math.PI * 10 + audioData[i];
-
-            let x = center_x + Math.cos(rads * i) * (radius);
-            let x2 = center_x2 + Math.cos(rads * i) * (radius);
-            let y = center_y + Math.sin(rads * i) * (radius);
-            //ctx.globalAlpha = .2;
-            if (audioData[i] > 210) {
-                r = 10;
-                g = 10;
-                b = 255;
-            } else if (audioData[i] > 200) {
-                r = 255;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 190) {
-                r = 204;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 180) {
-                r = 0;
-                g = 0;
-                b = 255;
-            } else if (audioData[i] > 130) {
-                r = 252;
-                g = 175;
-                b = 60;
-            } else if (audioData[i] > 90) {
-                r = 60;
-                g = 252;
-                b = 73;
-            } else if (audioData[i] > 50) {
-                r = 207;
-                g = 60;
-                b = 252;
-            } else {
-                r = 150;
-                g = 150;
-                b = 255;
-            }
-
-            ctx.globalAlpha = .5;
-            ctx.lineWidth = 1;
-            ctx.fillStyle = `rgb(${r},${g},${b})`;
-            ctx.fillRect(x, y, 20, 20)
-            ctx.fillRect(x2, y, 20, 20)
-            ctx.fill();
-
-
-            let maxRadius = canvasHeight / 3;
-
-            ctx.globalAlpha = 0.5;
-
-            let percent = audioData[i] / 255;
-
-            let circleRadius = percent * maxRadius;
-            ctx.beginPath();
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.arc(canvasWidth / 2 - 190, canvasHeight / 2 + 10, circleRadius, 0, 2 * Math.PI, false);
-            ctx.stroke();
-            ctx.closePath();
-
-            ctx.beginPath();
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.arc(canvasWidth / 2 - 190, canvasHeight / 2 + 10, circleRadius * 1.5, 0, 2 * Math.PI, false);
-            ctx.stroke();
-            ctx.closePath();
-
-
-            ctx.beginPath();
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.arc(canvasWidth / 2 - 190, canvasHeight / 2 + 10, circleRadius * .50, 0, 2 * Math.PI, false);
-            ctx.stroke();
-            ctx.closePath();
-
-            ctx.beginPath();
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.arc(canvasWidth / 2 + 210, canvasHeight / 2 + 10, circleRadius, 0, 2 * Math.PI, false);
-            ctx.stroke();
-            ctx.closePath();
-
-            ctx.beginPath();
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.arc(canvasWidth / 2 + 210, canvasHeight / 2 + 10, circleRadius * 1.5, 0, 2 * Math.PI, false);
-            ctx.stroke();
-            ctx.closePath();
-
-            ctx.beginPath();
-            ctx.globalAlpha = .01;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.arc(canvasWidth / 2 + 210, canvasHeight / 2 + 10, circleRadius * .50, 0, 2 * Math.PI, false);
-            ctx.stroke();
-            ctx.closePath();
-
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.strokeRect(canvasWidth - i - 280, canvasHeight / i, circleRadius, 100);
-            ctx.stroke();
-
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.strokeRect(canvasWidth - i - 60, canvasHeight / i, circleRadius, 100);
-            ctx.stroke();
-
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.strokeRect(canvasWidth - i - 500, canvasHeight / i, circleRadius, 100);
-            ctx.stroke();
-
-            ctx.globalAlpha = .1;
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.strokeRect(canvasWidth - i - 700, canvasHeight / i, circleRadius, 100);
-            ctx.stroke();
-
-        }
-
-
-        ctx.restore();
-    }
-
-    if (params.showCircleBarDisplay) {
-
-        let bars = 118 // Set total number of bars you want per frame
-        let center_x = canvasWidth / 2;
-        let center_y = canvasHeight / 2;
-        let radius = 75;
-        ctx.save();
-        //draw a circle
-        ctx.beginPath();
-        ctx.arc(center_x, center_y, radius, 0, 2 * Math.PI);
-        ctx.stroke();
-
-        for (let i = 0; i < bars; i++) {
-            let barHeight = audioData[i];
-            let rads = Math.PI * 2 / bars;
-
-
-            let bar_width = 2;
-
-            let x = center_x + Math.cos(rads * i) * (radius);
-            let y = center_y + Math.sin(rads * i) * (radius);
-            let x_end = center_x + Math.cos(rads * i) * (radius + barHeight);
-            let y_end = center_y + Math.sin(rads * i) * (radius + barHeight);
-            if (audioData[i] > 210) {
-                r = 10;
-                g = 10;
-                b = 255;
-            } else if (audioData[i] > 200) {
-                r = 255;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 190) {
-                r = 204;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 180) {
-                r = 0;
-                g = 0;
-                b = 255;
-            } else if (audioData[i] > 130) {
-                r = 252;
-                g = 175;
-                b = 60;
-            } else if (audioData[i] > 90) {
-                r = 60;
-                g = 252;
-                b = 73;
-            } else if (audioData[i] > 50) {
-                r = 207;
-                g = 60;
-                b = 252;
-            } else {
-                r = 150;
-                g = 150;
-                b = 255;
-            }
-
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.globalAlpha = 1;
-            ctx.lineWidth = bar_width;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x_end, y_end);
-            ctx.stroke();
-        }
-        let maxRadius = canvasHeight / 4;
-
-        ctx.globalAlpha = 0.5;
-        for (let i = 0; i < audioData.length; i++) {
-            let percent = audioData[i] / 255;
-
-            let circleRadius = percent * maxRadius;
-            ctx.beginPath();
-            ctx.fillStyle = utils.getRandomColor();
-            ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius, 0, 2 * Math.PI, false);
-            ctx.fill();
-            ctx.closePath();
-
-            ctx.beginPath();
-            ctx.fillStyle = utils.makeColor(0, 0, 255, .10 - percent / 10.0);
-            ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius * 1.5, 0, 2 * Math.PI, false);
-            ctx.fill();
-            ctx.closePath();
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.fillStyle = utils.makeColor(200, 200, 0, .5 - percent / 5.0);
-            ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius * .50, 0, 2 * Math.PI, false);
-            ctx.fill();
-            ctx.closePath();
-            ctx.restore();
-        }
-        ctx.restore();
-    }
-
-    if (params.showCircleBackground) {
-        let r, g, b;
-        ctx.save();
-
-        for (let i = 0; i < audioData.length; i++) {
-            if (audioData[i] > 210) {
-                r = 10;
-                g = 10;
-                b = 255;
-            } else if (audioData[i] > 200) {
-                r = 255;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 190) {
-                r = 204;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 180) {
-                r = 0;
-                g = 0;
-                b = 255;
-            } else if (audioData[i] > 130) {
-                r = 252;
-                g = 175;
-                b = 60;
-            } else if (audioData[i] > 90) {
-                r = 60;
-                g = 252;
-                b = 73;
-            } else if (audioData[i] > 50) {
-                r = 207;
-                g = 60;
-                b = 252;
-            } else {
-                r = 150;
-                g = 150;
-                b = 255;
-            }
-            let maxRadius = canvasHeight / 20;
-
-
-
-            ctx.beginPath();
-
-            ctx.arc(canvasWidth - audioData[i] - 400, i, maxRadius, 0, 2 * Math.PI, false);
-            ctx.arc(canvasWidth + audioData[i] - 400, i, maxRadius, 0, 2 * Math.PI, false);
-            ctx.globalAlpha = 0.5;
-            ctx.fillStyle = `rgb(${r},${g},${b})`;
-            ctx.fill();
-            ctx.closePath();
-
-        }
-        ctx.restore();
-    }
-
-    if (params.showLineBackground) {
-        let r, g, b;
-        ctx.save();
-        let width = canvasWidth / audioData.length;
-        let height = canvasHeight / audioData.length;
-        for (let i = 0; i < audioData.length; i++) {
-            if (audioData[i] > 210) {
-                r = 10;
-                g = 10;
-                b = 255;
-            } else if (audioData[i] > 200) {
-                r = 255;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 190) {
-                r = 204;
-                g = 255;
-                b = 0;
-            } else if (audioData[i] > 180) {
-                r = 0;
-                g = 0;
-                b = 255;
-            } else if (audioData[i] > 130) {
-                r = 252;
-                g = 175;
-                b = 60;
-            } else if (audioData[i] > 90) {
-                r = 60;
-                g = 252;
-                b = 73;
-            } else if (audioData[i] > 50) {
-                r = 207;
-                g = 60;
-                b = 252;
-            } else {
-                r = 150;
-                g = 150;
-                b = 255;
-            }
-            let rads = Math.PI * 2 / canvasWidth;
-
-            let x = canvasWidth / 25 + rads * i * (1500);
-            let y = canvasHeight / 25 + rads * i * (1500);
-            let x_end = canvasWidth / 25 + rads * i * (1500 + width);
-            let y_end = canvasHeight / 25 + rads * i * (1500 + height);
-
-            ctx.strokeStyle = `rgb(${r},${g},${b})`;
-            ctx.globalAlpha = 0.1;
-            ctx.lineWidth = 1500;
-            ctx.beginPath();
-            ctx.moveTo(x - 10, y - 10);
-            ctx.lineTo(x_end, y_end);
-            ctx.stroke();
-            ctx.restore();
-        }
-
-
-        ctx.restore();
-    }
-
-
-
-
+    //Creates image filter based on the frequency of the audio data, which changes the filter colors accordingly.
     let imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
     let data = imageData.data;
     let length = data.length;
     let width = imageData.width;
-    // B) Iterate through each pixel, stepping 4 elements at a time (which is the RGBA for 1 pixel)
+    for (let i = 0; i < length; i++) {
+        if (data[i] > 210) {
+            r = 10;
+            g = 10;
+            b = 255;
+        } else if (data[i] > 200) {
+            r = 255;
+            g = 255;
+            b = 0;
+        } else if (data[i] > 190) {
+            r = 204;
+            g = 255;
+            b = 0;
+        } else if (data[i] > 180) {
+            r = 0;
+            g = 0;
+            b = 255;
+        } else if (data[i] > 130) {
+            r = 252;
+            g = 175;
+            b = 60;
+        } else if (data[i] > 90) {
+            r = 60;
+            g = 252;
+            b = 73;
+        } else if (data[i] > 50) {
+            r = 207;
+            g = 60;
+            b = 252;
+        } else {
+            r = 150;
+            g = 150;
+            b = 255;
+        }
+    }
+
     ctx.save();
     for (let i = 0; i < length; i += 4) {
-        // C) randomly change every 20th pixel to red
+        if (params.showNoise && Math.random() < .1) {
+            data[i + r] = data[i + 1 + g] = data[i + 2 + b] = utils.getRandom(0, 255);
+            data[i + 1 + g] = 255;
 
-        if (params.showNoise && Math.random() < .01) {
-            // data[i] is the red channel
-            // data[i+1] is the green channel
-            // data[i+2] is the blue channel
-            // data[i+3] is the alpha channel
-
-
-            data[i] = data[i + 1] = data[i + 2] = utils.getRandom(0, 255) // zero out the red and green and blue channels
-            data[i + 1] = utils.getRandom(0, 255); // make the red channel 100% red
-
-        } // end if
+        }
         if (params.showInvert) {
             let red = data[i],
                 green = data[i + 1],
                 blue = data[i + 2];
-            data[i] = 200 - red;
-            data[i + 1] = red - green;
-            data[i + 2] = green - blue;
-        } // end if
-    } // end for
+            data[i] = 200 - red + r;
+            data[i + 1] = red - green + g;
+            data[i + 2] = green - blue + b;
+        }
+    }
     ctx.restore();
 
     ctx.save();
     for (let i = 0; i < length; i++) {
-
         if (params.showEmboss) {
-            if (i % 4 == 3 || i % 3 == 2) continue; //Skip alpha channel
-            data[i] = data[i + 3] - data[i + 4];
+            if (i % 4 == 3 || i % 3 == 2) continue;
+            data[i] = data[i + 2 + r] - data[i + 4 + g] - data[i + width * 4 + b]
         }
-
     }
-
     ctx.restore();
 
     if (params.showSepia) {
         ctx.save();
-
         for (let i = 0; i < length; i += 4) {
-            let r = data[i];
-            let g = data[i + 1];
-            let b = data[i + 2];
+            let r2 = data[i];
+            let g2 = data[i + 1];
+            let b2 = data[i + 2];
             let a = data[i + 3];
-            data[i] = (r * .671 - a) + (g * .769 - a) + (b * .189 - a);
-            data[i + 1] = (r * .349) + (g * .686 - a) + (b * .531);
-            data[i + 2] = (r * .272) + (g * .5) + (b * .131 - a);
-            data[i + 3] = (r * .272) + (g) + (b * .131 - a);
+            data[i + r] = (r2 * .671) + (g2 * .769 + g) + (b2 * .189 - a);
+            data[i + g] = (r2 * .349) + (g2 * .686 - a) + (b2 * .531);
+            data[i + b] = (r2 * .272) + (g2 * .5) + (b2 * .131 - a);
+            data[i + 3] = (r2 * .272) + (g2) + (b2 * .131 - a);
         }
+        ctx.globalAlpha = 0.4;
         ctx.restore();
     }
 
@@ -793,19 +505,13 @@ function draw(params = {}) {
             let red = data[i],
                 green = data[i + 1],
                 blue = data[i + 2];
-
-
-            data[i] = green;
-            data[i + 1] = blue;
-            data[i + 2] = red;
+            data[i + r] = green;
+            data[i + 1 - g] = blue;
+            data[i + 2 - b] = red;
         }
         ctx.restore();
     }
-
-    //Copy image data back to canvas
     ctx.putImageData(imageData, 0, 0);
 }
-
-
 
 export { setupCanvas, draw };
